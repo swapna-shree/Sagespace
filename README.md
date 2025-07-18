@@ -1,36 +1,113 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SageSpace
+
+A judgment-free space to share your thoughts, receive support, and find peace. SageSpace is a mental health support platform that provides a quiet corner of the internet for reflection and community.
+
+## Features
+
+- **User Authentication**: Secure sign-up and sign-in with email verification
+- **Google OAuth**: Quick sign-in with Google accounts
+- **Profile Management**: Customize your profile with display names and avatars
+- **Message System**: Send and receive supportive messages
+- **AI-Powered Suggestions**: Get thoughtful questions and affirmations from our AI companion
+- **Privacy Controls**: Toggle message acceptance settings
+- **Modern UI**: Beautiful, accessible interface built with shadcn/ui and Tailwind CSS
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript
+- **Styling**: Tailwind CSS, shadcn/ui components
+- **Authentication**: NextAuth.js with Google OAuth and credentials
+- **Database**: MongoDB with Mongoose ODM
+- **Email**: Resend for verification emails
+- **AI**: Google Gemini for message suggestions
+- **Forms**: React Hook Form with Zod validation
+- **Utilities**: use-debounce for optimized API calls
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 18+ 
+- MongoDB database
+- Google OAuth credentials
+- Resend API key
+- Google Gemini API key
+
+### Installation
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone <repository-url>
+cd sagespace
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. Install dependencies:
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+3. Set up environment variables:
+```bash
+cp .env.example .env.local
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Fill in your environment variables in `.env.local`:
+- `MONGO_URI`: Your MongoDB connection string
+- `NEXTAUTH_SECRET`: A random secret for NextAuth
+- `GOOGLE_CLIENT_ID` & `GOOGLE_CLIENT_SECRET`: Google OAuth credentials
+- `RESEND_API_KEY`: Resend email service API key
+- `GEMINI_API_KEY`: Google Gemini API key
 
-## Learn More
+4. Run the development server:
+```bash
+npm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) to see the application.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API routes
+│   ├── (auth)/            # Authentication pages
+│   └── globals.css        # Global styles
+├── components/            # Reusable UI components
+│   └── ui/               # shadcn/ui components
+├── context/              # React context providers
+├── helpers/              # Utility functions
+├── lib/                  # Library configurations
+├── model/                # MongoDB models
+├── schemas/              # Zod validation schemas
+├── types/                # TypeScript type definitions
+└── validation/           # Custom validation functions
+```
 
-## Deploy on Vercel
+## API Routes
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `POST /api/signup` - User registration
+- `POST /api/auth/[...nextauth]` - NextAuth authentication
+- `POST /api/resend` - Email verification
+- `GET /api/messages` - Fetch user messages
+- `POST /api/messages` - Send new message
+- `PUT /api/messages/accept` - Toggle message acceptance
+- `PUT /api/profile` - Update user profile
+- `PUT /api/change-password` - Change user password
+- `POST /api/suggest-messages` - Get AI suggestions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support, email support@sagespace.com or create an issue in the repository.
