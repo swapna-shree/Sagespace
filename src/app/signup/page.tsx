@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { signIn } from 'next-auth/react';
 
 export default function SignUp() {
     const [formData, setFormData] = useState({
@@ -19,7 +20,6 @@ export default function SignUp() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target
         setFormData(prev => ({ ...prev, [name]: value }))
-        // Clear error when user starts typing
         if (errors[name]) {
             setErrors(prev => ({ ...prev, [name]: '' }))
         }
@@ -27,41 +27,33 @@ export default function SignUp() {
 
     const validateForm = () => {
         const newErrors: Record<string, string> = {}
-
         if (!formData.username) {
             newErrors.username = 'Username is required'
         } else if (formData.username.length < 3) {
             newErrors.username = 'Username must be at least 3 characters'
         }
-
         if (!formData.email) {
             newErrors.email = 'Email is required'
         } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
             newErrors.email = 'Email is invalid'
         }
-
         if (!formData.password) {
             newErrors.password = 'Password is required'
         } else if (formData.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters'
         }
-
         if (formData.password !== formData.confirmPassword) {
             newErrors.confirmPassword = 'Passwords do not match'
         }
-
         setErrors(newErrors)
         return Object.keys(newErrors).length === 0
     }
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
-
         if (!validateForm()) return
-
         setIsLoading(true)
         setMessage('')
-
         try {
             const response = await fetch('/api/signup', {
                 method: 'POST',
@@ -74,12 +66,9 @@ export default function SignUp() {
                     password: formData.password,
                 }),
             })
-
             const data = await response.json()
-
             if (data.success) {
                 setMessage('Account created successfully! Please check your email for verification.')
-                // Optionally redirect to verify page
                 setTimeout(() => {
                     router.push(`/verify?email=${encodeURIComponent(formData.email)}`)
                 }, 2000)
@@ -93,122 +82,98 @@ export default function SignUp() {
         }
     }
 
+    const handleGoogleSignUp = () => {
+        signIn('google', { callbackUrl: '/home' });
+    };
+
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8">
-                <div>
-                    <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-                        Join SageSpace
-                    </h2>
-                    <p className="mt-2 text-center text-sm text-gray-600">
-                        Create your quiet corner of the internet
-                    </p>
-                </div>
-
-                <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-                    <div className="space-y-4">
-                        <div>
-                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                                Username
-                            </label>
-                            <input
-                                id="username"
-                                name="username"
-                                type="text"
-                                required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Choose a username"
-                                value={formData.username}
-                                onChange={handleChange}
-                            />
-                            {errors.username && (
-                                <p className="mt-1 text-sm text-red-600">{errors.username}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                                Email
-                            </label>
-                            <input
-                                id="email"
-                                name="email"
-                                type="email"
-                                required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Enter your email"
-                                value={formData.email}
-                                onChange={handleChange}
-                            />
-                            {errors.email && (
-                                <p className="mt-1 text-sm text-red-600">{errors.email}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                                Password
-                            </label>
-                            <input
-                                id="password"
-                                name="password"
-                                type="password"
-                                required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Create a password"
-                                value={formData.password}
-                                onChange={handleChange}
-                            />
-                            {errors.password && (
-                                <p className="mt-1 text-sm text-red-600">{errors.password}</p>
-                            )}
-                        </div>
-
-                        <div>
-                            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                                Confirm Password
-                            </label>
-                            <input
-                                id="confirmPassword"
-                                name="confirmPassword"
-                                type="password"
-                                required
-                                className="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                placeholder="Confirm your password"
-                                value={formData.confirmPassword}
-                                onChange={handleChange}
-                            />
-                            {errors.confirmPassword && (
-                                <p className="mt-1 text-sm text-red-600">{errors.confirmPassword}</p>
-                            )}
-                        </div>
-                    </div>
-
+        <div className="min-h-screen bg-gradient-to-b from-[#232323] to-[#2d2d2d] relative overflow-hidden">
+            <div className="fixed top-8 left-8 z-50">
+                <span className="text-3xl font-extrabold tracking-tight text-[#FFF9F3] select-none font-['General_Sans',_sans-serif]">SageSpace</span>
+            </div>
+            <main className="max-w-md mx-auto pt-32 pb-16 px-4 text-center relative z-10">
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Create Your Account</h1>
+                <p className="text-lg md:text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Join SageSpace and start your journey in a supportive, calming community.</p>
+                <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+                    <input
+                        id="username"
+                        name="username"
+                        type="text"
+                        required
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Choose a username"
+                        value={formData.username}
+                        onChange={handleChange}
+                    />
+                    {errors.username && (
+                        <p className="text-red-500 text-sm">{errors.username}</p>
+                    )}
+                    <input
+                        id="email"
+                        name="email"
+                        type="email"
+                        required
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your email"
+                        value={formData.email}
+                        onChange={handleChange}
+                    />
+                    {errors.email && (
+                        <p className="text-red-500 text-sm">{errors.email}</p>
+                    )}
+                    <input
+                        id="password"
+                        name="password"
+                        type="password"
+                        required
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Create a password"
+                        value={formData.password}
+                        onChange={handleChange}
+                    />
+                    {errors.password && (
+                        <p className="text-red-500 text-sm">{errors.password}</p>
+                    )}
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type="password"
+                        required
+                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Confirm your password"
+                        value={formData.confirmPassword}
+                        onChange={handleChange}
+                    />
+                    {errors.confirmPassword && (
+                        <p className="text-red-500 text-sm">{errors.confirmPassword}</p>
+                    )}
                     {errors.general && (
-                        <div className="text-red-600 text-sm text-center">{errors.general}</div>
+                        <div className="text-red-500 text-sm text-center">{errors.general}</div>
                     )}
-
                     {message && (
-                        <div className="text-green-600 text-sm text-center">{message}</div>
+                        <div className="text-green-500 text-sm text-center">{message}</div>
                     )}
-
-                    <div>
-                        <button
-                            type="submit"
-                            disabled={isLoading}
-                            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                        >
-                            {isLoading ? 'Creating account...' : 'Create account'}
-                        </button>
-                    </div>
-
-                    <div className="text-center">
-                        <Link href="/signin" className="text-indigo-600 hover:text-indigo-500">
+                    <button
+                        type="submit"
+                        disabled={isLoading}
+                        className="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 hover:bg-blue-700 disabled:opacity-70"
+                    >
+                        {isLoading ? 'Signing up...' : 'Sign up'}
+                    </button>
+                    <button
+                        type="button"
+                        onClick={handleGoogleSignUp}
+                        className="w-full px-4 py-2 rounded-md bg-gray-200 text-gray-800 font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 hover:bg-gray-300"
+                    >
+                        Sign up with Google
+                    </button>
+                    <div className="text-center mt-4">
+                        <Link href="/signin" className="text-blue-400 hover:underline">
                             Already have an account? Sign in
                         </Link>
                     </div>
                 </form>
-            </div>
+            </main>
         </div>
     )
 } 

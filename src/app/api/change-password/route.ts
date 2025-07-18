@@ -1,5 +1,5 @@
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "../auth/[...nextauth]/options"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import dbConnect from "@/lib/dbConnect"
 import UserModel from "@/model/User"
 import bcrypt from "bcrypt"

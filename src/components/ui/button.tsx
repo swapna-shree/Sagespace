@@ -2,54 +2,62 @@ import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
+import Link from 'next/link';
+import { useSession } from 'next-auth/react';
 
-const buttonVariants = cva(
-    "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
-    {
-        variants: {
-            variant: {
-                default: "bg-primary text-primary-foreground hover:bg-primary/90",
-                destructive:
-                    "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-                outline:
-                    "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
-                secondary:
-                    "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-                ghost: "hover:bg-accent hover:text-accent-foreground",
-                link: "text-primary underline-offset-4 hover:underline",
-            },
-            size: {
-                default: "h-10 px-4 py-2",
-                sm: "h-9 rounded-md px-3",
-                lg: "h-11 rounded-md px-8",
-                icon: "h-10 w-10",
-            },
-        },
-        defaultVariants: {
-            variant: "default",
-            size: "default",
-        },
-    }
-)
+export default function Profile() {
+    const { data: session, status } = useSession();
+    if (status === 'loading') return <div>Loading...</div>;
+    if (!session) return null;
 
-export interface ButtonProps
-    extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
-    asChild?: boolean
-}
-
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ className, variant, size, asChild = false, ...props }, ref) => {
-        const Comp = asChild ? Slot : "button"
-        return (
-            <Comp
-                className={cn(buttonVariants({ variant, size, className }))}
-                ref={ref}
-                {...props}
-            />
-        )
-    }
-)
-Button.displayName = "Button"
-
-export { Button, buttonVariants } 
+    return (
+        <div style={{
+            minHeight: '100vh',
+            background: 'linear-gradient(to bottom, #FDF6F0 0%, #FAFAFA 100%)',
+            color: '#333333',
+            fontFamily: 'Inter, Manrope, Arial, sans-serif',
+            position: 'relative',
+            overflow: 'hidden'
+        }}>
+            <header style={{
+                background: 'transparent',
+                borderBottom: '1px solidrgb(219, 205, 205)',
+                padding: '1.5rem 0 1rem 0',
+                position: 'sticky',
+                top: 0,
+                zIndex: 10,
+                boxShadow: '0 2px 8px rgba(183, 211, 198, 0.04)'
+            }}>
+                <div style={{
+                    maxWidth: '112rem',
+                    margin: '0 auto',
+                    padding: '0 2rem',
+                    display: 'flex',
+                    alignItems: 'center'
+                }}>
+                    <span style={{
+                        fontSize: '2.8rem',
+                        fontWeight: 800,
+                        color: '#333333',
+                        letterSpacing: '-0.02em',
+                        fontFamily: 'Manrope, Inter, Arial, sans-serif', // Manrope will be used if loaded
+                        textAlign: 'center',
+                        userSelect: 'none'
+                    }}>
+                        SageSpace
+                    </span>
+                    <nav style={{ display: 'flex', alignItems: 'center', gap: '2rem', marginLeft: '2.5rem' }}>
+                        <Link href="/" style={{ color: '#333333', fontWeight: 500, textDecoration: 'none' }}>Home</Link>
+                        <Link href="/dashboard" style={{ color: '#333333', fontWeight: 500, textDecoration: 'none' }}>Dashboard</Link>
+                        <Link href="/messages" style={{ color: '#333333', fontWeight: 500, textDecoration: 'none' }}>Messages</Link>
+                        <Link href="/profile" style={{ color: '#B7D3C6', fontWeight: 500, textDecoration: 'none' }}>Profile</Link>
+                    </nav>
+                </div>
+            </header>
+            <main style={{ maxWidth: '900px', margin: '0 auto', padding: '3rem 1rem 2rem', textAlign: 'center', position: 'relative', zIndex: 1 }}>
+                {/*profile content here */}
+                <h1 style={{ fontSize: '2.5rem', fontWeight: 800, marginBottom: '2rem' }}>Your Profile</h1>
+            </main>
+        </div>
+    );
+} 

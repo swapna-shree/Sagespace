@@ -18,7 +18,6 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL('/home', request.url));
   }
 
-  // Fallback for all other cases
   return NextResponse.next();
 }
 

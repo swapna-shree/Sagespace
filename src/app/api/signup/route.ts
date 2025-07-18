@@ -1,7 +1,7 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
 import bcrypt from "bcrypt";
-import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
+import sendVerificationEmail from "@/helpers/sendVerificationEmail";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(request: NextRequest) {
@@ -23,7 +23,8 @@ export async function POST(request: NextRequest) {
     }
 
     const existingUserByEmail = await UserModel.findOne({ email });
-    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otpExpiry = new Date(Date.now() + 5 * 60 * 1000); // 5 minutes
     const now = new Date();
 
     if (existingUserByEmail) {
@@ -48,8 +49,8 @@ export async function POST(request: NextRequest) {
         existingUserByEmail.password = await bcrypt.hash(password, 15);
       }
 
-      existingUserByEmail.verifyCode = verifyCode;
-      existingUserByEmail.verifyCodeExpiry = new Date(Date.now() + 60 * 60 * 1000); // +1 hour
+      existingUserByEmail.otp = otp;
+      existingUserByEmail.otpExpiry = otpExpiry;
       existingUserByEmail.lastVerificationSentAt = new Date();
 
       await existingUserByEmail.save();
@@ -62,8 +63,8 @@ export async function POST(request: NextRequest) {
         username,
         email,
         password: hashedPassword,
-        verifyCode,
-        verifyCodeExpiry: expiryDate,
+        otp,
+        otpExpiry,
         isVerified: false,
         isAcceptingMessage: true,
         displayName: "",
@@ -75,7 +76,7 @@ export async function POST(request: NextRequest) {
       await newUser.save();
     }
 
-    const emailResponse = await sendVerificationEmail(email, username, verifyCode);
+    const emailResponse = await sendVerificationEmail(email, username, otp);
     if (!emailResponse.success) {
       return NextResponse.json(
         { success: false, message: emailResponse.message },

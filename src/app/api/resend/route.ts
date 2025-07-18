@@ -1,6 +1,6 @@
 import dbConnect from "@/lib/dbConnect";
 import UserModel from "@/model/User";
-import { sendVerificationEmail } from "@/helpers/sendVerificationEmail";
+import sendVerificationEmail from "@/helpers/sendVerificationEmail";
 import { resendCodeSchema } from "@/schemas/resendCodeSchema"; // if you made a Zod schema
 import { NextResponse } from "next/server";
 
@@ -50,16 +50,16 @@ export async function POST(req: Request) {
     }
 
     // Generate new code and expiry
-    const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
-    user.verifyCode = verifyCode;
-    user.verifyCodeExpiry = new Date(now + 60 * 60 * 1000); // 1 hour validity
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    user.otp = otp;
+    user.otpExpiry = new Date(now + 5 * 60 * 1000); // 5 minutes
     await user.save();
 
     // Send email
     const emailResponse = await sendVerificationEmail(
       user.email,
       user.username,
-      verifyCode
+      otp
     );
 
     if (!emailResponse.success) {

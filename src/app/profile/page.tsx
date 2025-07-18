@@ -4,12 +4,14 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import SaasNavbar from "@/components/SaasNavbar";
 
 interface ProfileData {
     displayName: string
     avatarUrl: string
     username: string
     email: string
+    isVerified: boolean
 }
 
 export default function Profile() {
@@ -23,7 +25,8 @@ export default function Profile() {
         displayName: '',
         avatarUrl: '',
         username: '',
-        email: ''
+        email: '',
+        isVerified: false
     })
 
     useEffect(() => {
@@ -32,13 +35,33 @@ export default function Profile() {
         if (!session) {
             router.push('/signin')
         } else {
-            setProfileData({
-                displayName: session.user.displayName || '',
-                avatarUrl: session.user.avatarUrl || '',
-                username: session.user.username || '',
-                email: session.user.email || ''
-            })
-            setIsLoading(false)
+            // Try to get isVerified from session, else fetch from backend
+            let isVerified = false;
+            if (session.user.isVerified !== undefined) {
+                isVerified = session.user.isVerified;
+                setProfileData({
+                    displayName: session.user.displayName || '',
+                    avatarUrl: session.user.avatarUrl || '',
+                    username: session.user.username || '',
+                    email: session.user.email || '',
+                    isVerified
+                })
+                setIsLoading(false)
+            } else {
+                // Fetch from backend
+                fetch('/api/profile')
+                    .then(res => res.json())
+                    .then(data => {
+                        setProfileData(prev => ({
+                            displayName: data.data?.displayName ?? prev.displayName ?? '',
+                            avatarUrl: data.data?.avatarUrl ?? prev.avatarUrl ?? '',
+                            username: data.data?.username ?? prev.username ?? '',
+                            email: data.data?.email ?? prev.email ?? '',
+                            isVerified: data.data?.isVerified ?? prev.isVerified ?? false
+                        }))
+                        setIsLoading(false)
+                    })
+            }
         }
     }, [session, status, router])
 
@@ -105,40 +128,21 @@ export default function Profile() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-4">
-                        <div className="flex items-center">
-                            <Link href="/home" className="text-2xl font-bold text-gray-900 hover:text-indigo-600">
-                                SageSpace
-                            </Link>
-                            <span className="ml-4 text-sm text-gray-500">Profile</span>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                href="/home"
-                                className="text-indigo-600 hover:text-indigo-500 font-medium"
-                            >
-                                Home
-                            </Link>
-                            <Link
-                                href="/dashboard"
-                                className="text-indigo-600 hover:text-indigo-500 font-medium"
-                            >
-                                Dashboard
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-gradient-to-b from-[#232323] to-[#2d2d2d] relative overflow-hidden">
+            <SaasNavbar />
+            <main className="max-w-2xl mx-auto pt-32 pb-16 px-4 text-center relative z-10">
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Your Profile</h1>
+                <p className="text-lg md:text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Manage your account details, verification status, and preferences in a peaceful space.</p>
+                {/* Add profile content here, using the same dark palette for headings, text, and buttons */}
                 <div className="mb-8">
                     <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Profile</h1>
                     <p className="text-gray-600">Manage your personal information and preferences</p>
+                    <div className="mt-2">
+                        <span className={`inline-block px-3 py-1 rounded-full text-xs font-semibold ${profileData.isVerified ? 'bg-green-100 text-green-800' : 'bg-yellow-100 text-yellow-800'}`}>
+                            {profileData.isVerified ? 'Verified Account' : 'Not Verified'}
+                        </span>
+                        <span className="ml-4 text-sm text-gray-700">Username: <span className="font-bold">{profileData.username}</span></span>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

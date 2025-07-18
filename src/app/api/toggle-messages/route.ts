@@ -1,54 +1,17 @@
-import { getServerSession } from "next-auth/next"
-import { authOptions } from "../auth/[...nextauth]/options"
-import dbConnect from "@/lib/dbConnect"
-import UserModel from "@/model/User"
-import { NextRequest, NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server";
+import dbConnect from "@/lib/dbConnect";
+import User from "@/model/User";
 
-export async function POST(request: NextRequest) {
-    try {
-        const session = await getServerSession(authOptions)
+export async function PUT(req: NextRequest) {
+    const { email } = await req.json();
+    await dbConnect();
+    const user = await User.findOne({ email });
+    if (!user) return NextResponse.json({ error: "User not found" }, { status: 404 });
+    user.isAcceptingMessage = !user.isAcceptingMessage;
+    await user.save();
+    return NextResponse.json({ isAcceptingMessage: user.isAcceptingMessage });
+}
 
-        if (!session?.user?._id) {
-            return NextResponse.json(
-                { success: false, message: "Unauthorized" },
-                { status: 401 }
-            )
-        }
-
-        const { isAcceptingMessages } = await request.json()
-
-        if (typeof isAcceptingMessages !== 'boolean') {
-            return NextResponse.json(
-                { success: false, message: "Invalid request body" },
-                { status: 400 }
-            )
-        }
-
-        await dbConnect()
-
-        const user = await UserModel.findById(session.user._id)
-
-        if (!user) {
-            return NextResponse.json(
-                { success: false, message: "User not found" },
-                { status: 404 }
-            )
-        }
-
-        user.isAcceptingMessage = isAcceptingMessages
-        await user.save()
-
-        return NextResponse.json({
-            success: true,
-            message: `Messages ${isAcceptingMessages ? 'enabled' : 'disabled'} successfully`,
-            isAcceptingMessages
-        })
-
-    } catch (error) {
-        console.error("Error toggling messages:", error)
-        return NextResponse.json(
-            { success: false, message: "Internal server error" },
-            { status: 500 }
-        )
-    }
+export async function POST(req: NextRequest) {
+    return PUT(req);
 } 

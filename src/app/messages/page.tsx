@@ -4,6 +4,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
+import SaasNavbar from "@/components/SaasNavbar";
 
 interface Message {
     content: string
@@ -91,41 +92,12 @@ export default function Messages() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50">
-            {/* Header */}
-            <header className="bg-white shadow-sm border-b">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-4">
-                        <div className="flex items-center">
-                            <Link href="/home" className="text-2xl font-bold text-gray-900 hover:text-indigo-600">
-                                SageSpace
-                            </Link>
-                            <span className="ml-4 text-sm text-gray-500">Messages</span>
-                        </div>
-                        <div className="flex items-center space-x-4">
-                            <Link
-                                href="/home"
-                                className="text-indigo-600 hover:text-indigo-500 font-medium"
-                            >
-                                Home
-                            </Link>
-                            <Link
-                                href="/dashboard"
-                                className="text-indigo-600 hover:text-indigo-500 font-medium"
-                            >
-                                Dashboard
-                            </Link>
-                        </div>
-                    </div>
-                </div>
-            </header>
-
-            {/* Main Content */}
-            <main className="max-w-4xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold text-gray-900 mb-2">Your Messages</h1>
-                    <p className="text-gray-600">View and manage all your messages</p>
-                </div>
+        <div className="min-h-screen bg-gradient-to-b from-[#232323] to-[#2d2d2d] relative overflow-hidden">
+            <SaasNavbar />
+            <main className="max-w-2xl mx-auto pt-32 pb-16 px-4 text-center relative z-10">
+                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Your Messages</h1>
+                <p className="text-lg md:text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">View and manage all your messages in a supportive, calming environment.</p>
+                {/* Add messages content here, using the same dark palette for headings, text, and buttons */}
 
                 {/* Stats and Filters */}
                 <div className="bg-white rounded-lg shadow-md p-6 mb-6">
@@ -238,8 +210,8 @@ export default function Messages() {
                                     key={page}
                                     onClick={() => handlePageChange(page)}
                                     className={`px-3 py-2 text-sm font-medium rounded-md ${currentPage === page
-                                            ? 'bg-indigo-600 text-white'
-                                            : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
+                                        ? 'bg-indigo-600 text-white'
+                                        : 'text-gray-500 bg-white border border-gray-300 hover:bg-gray-50'
                                         }`}
                                 >
                                     {page}

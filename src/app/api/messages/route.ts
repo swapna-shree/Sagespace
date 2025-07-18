@@ -1,57 +1,22 @@
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "../auth/[...nextauth]/options"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import dbConnect from "@/lib/dbConnect"
 import UserModel from "@/model/User"
 import { NextRequest, NextResponse } from "next/server"
 import { Message } from "@/model/User"
 
-export async function GET(request: NextRequest) {
-    try {
-        const session = await getServerSession(authOptions)
-
-        if (!session?.user?._id) {
-            return NextResponse.json(
-                { success: false, message: "Unauthorized" },
-                { status: 401 }
-            )
-        }
-
-        const { searchParams } = new URL(request.url)
-        const page = parseInt(searchParams.get('page') || '1')
-        const limit = parseInt(searchParams.get('limit') || '20')
-        const skip = (page - 1) * limit
-
-        await dbConnect()
-
-        const user = await UserModel.findById(session.user._id)
-
-        if (!user) {
-            return NextResponse.json(
-                { success: false, message: "User not found" },
-                { status: 404 }
-            )
-        }
-
-        const messages = user.messages || []
-        const total = messages.length
-        const paginatedMessages = messages.slice(skip, skip + limit)
-
-        return NextResponse.json({
-            success: true,
-            messages: paginatedMessages,
-            total,
-            page,
-            limit,
-            totalPages: Math.ceil(total / limit)
-        })
-
-    } catch (error) {
-        console.error("Error fetching messages:", error)
-        return NextResponse.json(
-            { success: false, message: "Internal server error" },
-            { status: 500 }
-        )
+export async function GET(req: NextRequest) {
+    await dbConnect();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
+    const user = await UserModel.findOne({ email: session.user.email });
+    if (!user) {
+        return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    }
+    // Assuming user.messages is an array of message objects
+    return NextResponse.json({ success: true, messages: user.messages || [] });
 }
 
 export async function POST(request: NextRequest) {

@@ -1,8 +1,29 @@
 import { getServerSession } from "next-auth/next"
-import { authOptions } from "../auth/[...nextauth]/options"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import dbConnect from "@/lib/dbConnect"
 import UserModel from "@/model/User"
 import { NextRequest, NextResponse } from "next/server"
+
+export async function GET(req: NextRequest) {
+    await dbConnect();
+    const session = await getServerSession(authOptions);
+    if (!session) {
+        return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+    const user = await UserModel.findOne({ email: session.user.email });
+    if (!user) {
+        return NextResponse.json({ success: false, message: 'User not found' }, { status: 404 });
+    }
+    return NextResponse.json({
+        success: true, data: {
+            displayName: user.displayName,
+            avatarUrl: user.avatarUrl,
+            username: user.username,
+            email: user.email,
+            isVerified: user.isVerified,
+        }
+    });
+}
 
 export async function PUT(request: NextRequest) {
     try {

@@ -3,19 +3,15 @@ import VerificationEmail from "../../emails/VerificationEmail";
 import { ApiResponse } from "@/types/apiResponse";
 import React from "react";
 
-export async function sendVerificationEmail(
-  email: string,
-  username: string,
-  verifyCode: string
-): Promise<ApiResponse> {
+export default async function sendVerificationEmail(email: string, username: string, otp: string) {
   try {
     await resend.emails.send({
-      from: "onboarding@resend.dev", 
-      to: email, 
+      from: "onboarding@resend.dev",
+      to: email,
       subject: "Your SageSpace Verification Code",
       react: React.createElement(VerificationEmail, {
         username,
-        code: verifyCode,
+        code: otp,
         email,
       }),
     });

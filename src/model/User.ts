@@ -29,7 +29,7 @@ const MessageSchema: Schema<Message> = new Schema(
     },
   },
   {
-    _id: false, 
+    _id: false,
   }
 );
 
@@ -47,7 +47,9 @@ export interface User extends Document {
   messages: Message[];
   createdAt?: Date;
   updatedAt?: Date;
-  lastVerificationSentAt ?: Date;
+  lastVerificationSentAt?: Date;
+  otp: string;
+  otpExpiry: Date;
 }
 
 const UserSchema: Schema<User> = new Schema(
@@ -100,14 +102,16 @@ const UserSchema: Schema<User> = new Schema(
     lastVerificationSentAt: {
       type: Date,
       default: null,
-    },    
+    },
     messages: {
       type: [MessageSchema],
       default: [],
     },
+    otp: { type: String },
+    otpExpiry: { type: Date },
   },
   {
-    timestamps: true, 
+    timestamps: true,
   }
 );
 
