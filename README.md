@@ -180,10 +180,6 @@ src/
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-## Support
-
-For support, email support@sagespace.com or join our Slack channel.
-
 ---
 
-**SageSpace** - A safe space for your thoughts, powered by AI and built with care.
+**SageSpace** - A safe space for your thoughts.
