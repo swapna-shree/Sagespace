@@ -53,3 +53,15 @@ body {
   min-height: 100vh;
   transition: background 0.3s, color 0.3s;
 }
+
+/* Autofill fix for dark input fields */
+input:-webkit-autofill,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px #232323 inset !important;
+  box-shadow: 0 0 0 1000px #232323 inset !important;
+  -webkit-text-fill-color: #FFF9F3 !important;
+  color: #FFF9F3 !important;
+  font-weight: 600;
+}

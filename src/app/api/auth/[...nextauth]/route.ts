@@ -22,6 +22,7 @@ export const authOptions: AuthOptions = {
                 if (!credentials) return null;
                 const identifier = (credentials as any).identifier;
                 const password = (credentials as any).password;
+                if (!identifier || !password) return null;
                 const user = await User.findOne({
                     $or: [
                         { email: identifier },

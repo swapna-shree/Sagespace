@@ -91,16 +91,16 @@ export default function SignUp() {
             <div className="fixed top-8 left-8 z-50">
                 <span className="text-3xl font-extrabold tracking-tight text-[#FFF9F3] select-none font-['General_Sans',_sans-serif]">SageSpace</span>
             </div>
-            <main className="max-w-md mx-auto pt-32 pb-16 px-4 text-center relative z-10">
-                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Create Your Account</h1>
-                <p className="text-lg md:text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Join SageSpace and start your journey in a supportive, calming community.</p>
+            <main className="max-w-lg mx-auto pt-32 pb-16 px-4 text-center relative z-10">
+                <h1 className="text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Create Your Account</h1>
+                <p className="text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Join SageSpace and start your journey in a supportive, calming community.</p>
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <input
                         id="username"
                         name="username"
                         type="text"
                         required
-                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
                         placeholder="Choose a username"
                         value={formData.username}
                         onChange={handleChange}
@@ -113,7 +113,7 @@ export default function SignUp() {
                         name="email"
                         type="email"
                         required
-                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
                         placeholder="Enter your email"
                         value={formData.email}
                         onChange={handleChange}
@@ -126,8 +126,8 @@ export default function SignUp() {
                         name="password"
                         type="password"
                         required
-                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        placeholder="Create a password"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
+                        placeholder="Enter your password"
                         value={formData.password}
                         onChange={handleChange}
                     />
@@ -139,7 +139,7 @@ export default function SignUp() {
                         name="confirmPassword"
                         type="password"
                         required
-                        className="w-full px-4 py-2 rounded-md border border-gray-300 bg-gray-100 text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
                         placeholder="Confirm your password"
                         value={formData.confirmPassword}
                         onChange={handleChange}
@@ -156,19 +156,24 @@ export default function SignUp() {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className="w-full px-4 py-2 rounded-md bg-blue-600 text-white font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors duration-200 hover:bg-blue-700 disabled:opacity-70"
+                        className="w-full py-3 text-lg rounded-md bg-[#B6C9B3] text-[#232323] font-semibold shadow hover:bg-[#A3C7B5] transition"
                     >
                         {isLoading ? 'Signing up...' : 'Sign up'}
                     </button>
+                    <div className="flex items-center my-4">
+                        <div className="flex-1 h-px bg-[#B6C9B3]" />
+                        <span className="mx-4 text-[#B6C9B3] font-semibold">or</span>
+                        <div className="flex-1 h-px bg-[#B6C9B3]" />
+                    </div>
                     <button
                         type="button"
                         onClick={handleGoogleSignUp}
-                        className="w-full px-4 py-2 rounded-md bg-gray-200 text-gray-800 font-semibold focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors duration-200 hover:bg-gray-300"
+                        className="w-full py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#B6C9B3] font-semibold hover:bg-[#333] transition"
                     >
                         Sign up with Google
                     </button>
-                    <div className="text-center mt-4">
-                        <Link href="/signin" className="text-blue-400 hover:underline">
+                    <div className="text-center mt-6">
+                        <Link href="/signin" className="text-[#B6C9B3] hover:underline">
                             Already have an account? Sign in
                         </Link>
                     </div>

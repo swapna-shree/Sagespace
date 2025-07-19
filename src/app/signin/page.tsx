@@ -46,11 +46,11 @@ export default function SignIn() {
                 <span className="text-3xl font-extrabold tracking-tight text-[#FFF9F3] select-none font-['General_Sans',_sans-serif]">SageSpace</span>
             </div>
             <main className="max-w-md mx-auto pt-32 pb-16 px-4 text-center relative z-10">
-                <h1 className="text-4xl md:text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Sign In</h1>
-                <p className="text-lg md:text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Sign in to your SageSpace account to continue.</p>
+                <h1 className="text-5xl font-bold leading-tight tracking-wide text-[#FFF9F3] mb-4 font-['General_Sans',_sans-serif]">Sign In</h1>
+                <p className="text-xl text-[#B6C9B3] leading-relaxed tracking-normal font-['Inter',_sans-serif] mb-8">Sign in to your SageSpace account to continue.</p>
                 <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
                     <input
-                        className="w-full px-4 py-3 rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#B6C9B3] focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
                         placeholder="Username"
                         id="identifier"
                         name="identifier"
@@ -60,7 +60,7 @@ export default function SignIn() {
                         onChange={(e) => setIdentifier(e.target.value)}
                     />
                     <input
-                        className="w-full px-4 py-3 rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#B6C9B3] focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
+                        className="w-full px-4 py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#FFF9F3] placeholder-[#FFF9F3] font-semibold focus:outline-none focus:ring-2 focus:ring-[#FAD4C0] transition"
                         placeholder="Password"
                         id="password"
                         name="password"
@@ -73,22 +73,26 @@ export default function SignIn() {
                         <p className="text-[#E2AFAF] text-sm font-medium mt-2">{error}</p>
                     )}
                     <button
-                        className="w-full py-3 rounded-md bg-[#B6C9B3] text-[#232323] font-semibold shadow hover:bg-[#A3C7B5] transition"
+                        className="w-full py-3 text-lg rounded-md bg-[#B6C9B3] text-[#232323] font-semibold shadow hover:bg-[#A3C7B5] transition"
                         type="submit"
                         disabled={isLoading}
                     >
                         {isLoading ? 'Signing in...' : 'Sign in'}
                     </button>
+                    <div className="flex items-center my-4">
+                        <div className="flex-1 h-px bg-[#B6C9B3]" />
+                        <span className="mx-4 text-[#B6C9B3] font-semibold">or</span>
+                        <div className="flex-1 h-px bg-[#B6C9B3]" />
+                    </div>
                     <button
-                        className="w-full py-3 rounded-md bg-[#232323] border border-[#B6C9B3] text-[#B6C9B3] font-semibold opacity-60 cursor-not-allowed mt-2"
+                        className="w-full py-3 text-lg rounded-md bg-[#232323] border border-[#B6C9B3] text-[#B6C9B3] font-semibold mt-2 hover:bg-[#333] transition"
                         type="button"
                         onClick={handleGoogleSignIn}
-                        disabled
                     >
                         Sign in with Google
                     </button>
                 </form>
-                <p className="mt-6 text-[#B6C9B3] text-sm">
+                <p className="mt-6 text-[#B6C9B3] text-base">
                     Don't have an account? <Link href="/signup" className="underline text-[#FAD4C0]">Sign up</Link>
                 </p>
             </main>
